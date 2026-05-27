@@ -27,7 +27,7 @@ class IndexConstructionModule:
         self.embeddings=HuggingFaceEmbeddings(
             model_name=self.model_name,
             model_kwargs={'device':'cpu'},
-            encode_kwargs={'normalize_embedding':True}
+            encode_kwargs={'normalize_embeddings':True}
         )
 
         logger.info("嵌入模型初始化完成")
@@ -77,7 +77,7 @@ class IndexConstructionModule:
             logger.info(f"索引路径不存在:{self.index_save_path}")
             return None
         try:
-            self.vectorstore.load_local(
+            self.vectorstore=FAISS.load_local(
                 self.index_save_path,self.embeddings,allow_dangerous_deserialization=True
             )
             return self.vectorstore

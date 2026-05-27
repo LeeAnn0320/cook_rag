@@ -21,6 +21,8 @@ class RetrievalOptimizationModule:
             chunks:文档块列表
     
         """
+        if vectorstore is None:
+            raise ValueError("vectorstore 不能为 None，请先构建索引")
         self.vectorstore=vectorstore
         self.chunks=chunks
         self.setup_retrievers()
@@ -29,9 +31,9 @@ class RetrievalOptimizationModule:
         """设置向量检索器和BM25检索器"""
         logger.info("正在设置检索器")
         #向量检索器
-        self.vector_retriever=self.vectorstore.as_retriever(search_type="similarity",search_kwargs={"k",5})
+        self.vector_retriever=self.vectorstore.as_retriever(search_type="similarity",search_kwargs={"k":5})
         #BM25检索器
-        self.bm25_retriever=BM25Retriever(
+        self.bm25_retriever=BM25Retriever.from_documents(
             self.chunks,k=5
         )
 

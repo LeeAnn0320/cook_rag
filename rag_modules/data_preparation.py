@@ -9,7 +9,7 @@ logger=logging.getLogger(__name__)
 from pathlib import Path
 from typing import List,Dict,Optional,Any
 from langchain_core.documents import Document
-from langchain_text_splitters import MarkdownTextSplitter
+from langchain_text_splitters import MarkdownHeaderTextSplitter
 import uuid
 class DataPreparationModule:
     """数据准备模块，负责 数据加载 清洗 预处理"""
@@ -101,11 +101,12 @@ class DataPreparationModule:
             doc.metadata['difficulty'] = '非常简单'
         else:
             doc.metadata['difficulty'] = '未知'
+
     @classmethod #无需创建实例即可调用
     def get_supported_categories(cls)->List[str]:
         """对外提供支持的分类标签列表"""
         return cls.CATEGORY_LABELS
-    
+    @classmethod
     def get_supported_difficulties(cls)->List[str]:
         """对外提供支持的难度标签列表"""
         return cls.DIFFICULTY_LABELS
@@ -138,15 +139,15 @@ class DataPreparationModule:
             按标题结构分割的文档列表
         """
 
-        header_to_split_on=[
+        headers_to_split_on=[
             ('#',"一级标题"),
             ('##',"二级标题"),
             ('###',"三级标题")
         ]
 
         #创建markdown分割器
-        markdown_spliter=MarkdownTextSplitter(
-            header_to_split_on=header_to_split_on,
+        markdown_spliter=MarkdownHeaderTextSplitter(
+            headers_to_split_on=headers_to_split_on,
             strip_headers=False
         )
         all_chunks=[]
@@ -160,9 +161,9 @@ class DataPreparationModule:
                     logger.debug(f"内容预览：{content_preview}")
 
                 md_chunks=markdown_spliter.split_text(doc.page_content)
-                logger.debug(f"文档:{doc.metadata.get("dish_name",'未知')}被切成了{len(md_chunks)}块")
+                logger.debug(f"文档:{doc.metadata.get('dish_name','未知')}被切成了{len(md_chunks)}块")
                 if len(md_chunks)<=1:
-                    logger.debug(f"文档:{doc.metadata.get("dish_name",'未知')}未能按标题分割")
+                    logger.debug(f"文档:{doc.metadata.get('dish_name','未知')}未能按标题分割")
                 #为每个子文档建立与父文档的关系
 
                 parent_id=doc.metadata["parent_id"]
