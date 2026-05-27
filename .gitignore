@@ -1,4 +1,4 @@
 .env
 __pycache__
-.vscode\
-vector_index\
+.vscode/
+vector_index/
