@@ -19,7 +19,7 @@ load_dotenv()
 
 class GenerationIntegrationModule:
     """生成集成模块 -负责LLM集成和回答生成"""
-    def __init__(self,model_name:str="qwen3.5-plus",temperature:float=0.1,max_tokens:int=2048):
+    def __init__(self,model_name:str="qwen-max",temperature:float=0.1,max_tokens:int=2048):
         """
         初始化生成集成模块
         
@@ -40,7 +40,7 @@ class GenerationIntegrationModule:
         """初始化大预言模型"""
         logger.info(f"正在初始化大语言模型:{self.model_name}")
         api_key=os.getenv("DASHSCOPE_API_KEY")
-        self.llm=ChatTongyi(model="qwen3-max",temperature=self.temperature,streaming=True)
+        self.llm=ChatTongyi(model=self.model_name,temperature=self.temperature,streaming=True)
         logger.info("大语言模型初始化完成")
     def generate_basic_answer(self,query:str,context_docs:List[Document])->str:
         context=self._build_context(context_docs)
